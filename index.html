@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Toque Fácil - Aprenda a usar a tela do celular</title>
+<meta name="description" content="Curso interativo para aprender gestos no celular: toque, deslizar, pinçar, WhatsApp, YouTube e Google." />
+<style>
+  /* ============================================================
+     ESTILOS (CSS)
+     Aqui ficam as cores, tamanhos e a aparência da página.
+     Tudo em um arquivo só para facilitar o estudo!
+     ============================================================ */
+
+  :root {
+    --cor-fundo: #fafafa;
+    --cor-texto: #1a1a1a;
+    --cor-suave: #666;
+    --cor-primaria: #2563eb;
+    --cor-primaria-clara: #dbeafe;
+    --cor-sucesso: #16a34a;
+    --cor-sucesso-clara: #dcfce7;
+    --cor-borda: #e5e5e5;
+    --cor-card: #ffffff;
+    --cor-whatsapp: #25D366;
+    --cor-youtube: #FF0000;
+    --cor-google-azul: #4285F4;
+    --cor-google-vermelho: #EA4335;
+    --cor-google-amarelo: #FBBC05;
+    --cor-google-verde: #34A853;
+    --raio: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--cor-fundo);
+    color: var(--cor-texto);
+    line-height: 1.5;
+    padding: 16px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  /* Cabeçalho (Hero) */
+  .hero {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    margin-bottom: 16px;
+  }
+  .hero p {
+    font-size: 1.25rem;
+    color: var(--cor-suave);
+  }
+
+  /* Barra de progresso */
+  .progresso-caixa {
+    background: var(--cor-card);
+    border: 2px solid var(--cor-borda);
+    border-radius: var(--raio);
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+  .progresso-barra {
+    width: 100%;
+    height: 20px;
+    background: var(--cor-borda);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progresso-preenchimento {
+    height: 100%;
+    background: var(--cor-primaria);
+    transition: width 0.4s ease;
+  }
+
+  /* Cartão de lição */
+  .cartao-licao {
+    background: var(--cor-card);
+    border: 3px solid var(--cor-borda);
+    border-radius: var(--raio);
+    padding: 24px;
+    margin-bottom: 16px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .cartao-licao:hover:not(.bloqueada) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+  }
+  .cartao-licao.concluida {
+    border-color: var(--cor-sucesso);
+    background: var(--cor-sucesso-clara);
+  }
+  .cartao-licao.bloqueada {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .numero-licao {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    background: var(--cor-primaria-clara);
+    color: var(--cor-primaria);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+  .cartao-licao.concluida .numero-licao {
+    background: var(--cor-sucesso);
+    color: white;
+  }
+  .emoji-licao { font-size: 3rem; }
+  .info-licao { flex: 1; }
+  .info-licao h3 { font-size: 1.4rem; margin-bottom: 4px; }
+  .info-licao p { color: var(--cor-suave); }
+
+  /* Botões */
+  .botao {
+    background: var(--cor-primaria);
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    min-height: 56px;
+    transition: transform 0.1s;
+  }
+  .botao:active { transform: scale(0.97); }
+  .botao-voltar {
+    background: transparent;
+    color: var(--cor-texto);
+    margin-bottom: 16px;
+  }
+
+  /* Tela da lição */
+  .tela-licao { display: none; }
+  .tela-licao.ativa { display: block; }
+  .area-pratica {
+    background: var(--cor-primaria-clara);
+    border: 4px dashed var(--cor-primaria);
+    border-radius: var(--raio);
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    margin: 24px 0;
+    user-select: none;
+    touch-action: none;
+    font-size: 1.5rem;
+  }
+  .area-pratica.sucesso {
+    background: var(--cor-sucesso-clara);
+    border-color: var(--cor-sucesso);
+  }
+  .estatisticas {
+    display: flex;
+    justify-content: space-around;
+    background: var(--cor-card);
+    border: 2px solid var(--cor-borda);
+    border-radius: var(--raio);
+    padding: 16px;
+    text-align: center;
+  }
+  .estatisticas div strong {
+    display: block;
+    font-size: 2rem;
+    color: var(--cor-primaria);
+  }
+
+  /* Toast (mensagem) */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(120px);
+    background: var(--cor-texto);
+    color: white;
+    padding: 16px 24px;
+    border-radius: 12px;
+    transition: transform 0.3s;
+    z-index: 1000;
+    max-width: 90%;
+    text-align: center;
+  }
+  .toast.visivel { transform: translateX(-50%) translateY(0); }
+  .toast.sucesso { background: var(--cor-sucesso); }
+
+  /* Simulações de app */
+  .tela-app {
+    max-width: 360px;
+    margin: 0 auto;
+    background: white;
+    border: 8px solid #1a1a1a;
+    border-radius: 32px;
+    overflow: hidden;
+    min-height: 500px;
+    position: relative;
+  }
+  .cabecalho-whatsapp {
+    background: var(--cor-whatsapp);
+    color: white;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .conversa { padding: 16px; min-height: 320px; background: #ECE5DD; }
+  .balao {
+    background: #DCF8C6;
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    max-width: 80%;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .rodape-whatsapp {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    gap: 8px;
+    background: #f0f0f0;
+  }
+  .campo-mensagem {
+    flex: 1;
+    background: white;
+    border-radius: 24px;
+    padding: 12px 16px;
+    color: var(--cor-suave);
+  }
+  .botao-microfone {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--cor-whatsapp);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+  }
+  .botao-microfone.gravando {
+    background: #ff4444;
+    transform: scale(1.2);
+  }
+  .ondas-audio {
+    display: none;
+    color: var(--cor-whatsapp);
+    font-weight: bold;
+  }
+  .ondas-audio.ativo { display: block; }
+
+  .cabecalho-youtube {
+    background: white;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo-youtube { color: var(--cor-youtube); font-weight: bold; font-size: 1.2rem; }
+  .icone-lupa {
+    margin-left: auto;
+    background: #f0f0f0;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+  }
+  .icone-lupa.destacado { box-shadow: 0 0 0 4px var(--cor-primaria); animation: pulsa 1s infinite; }
+  .barra-pesquisa-yt {
+    padding: 8px 12px;
+    background: #f5f5f5;
+    border-radius: 4px;
+    margin: 12px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+  }
+  .video-item {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    cursor: pointer;
+  }
+  .video-item.destacado { background: var(--cor-primaria-clara); }
+  .miniatura-video {
+    width: 100px;
+    height: 60px;
+    background: linear-gradient(135deg, #ff4444, #ff0000);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+  }
+
+  .cabecalho-google {
+    padding: 32px 16px;
+    text-align: center;
+  }
+  .logo-google span:nth-child(1) { color: var(--cor-google-azul); }
+  .logo-google span:nth-child(2) { color: var(--cor-google-vermelho); }
+  .logo-google span:nth-child(3) { color: var(--cor-google-amarelo); }
+  .logo-google span:nth-child(4) { color: var(--cor-google-azul); }
+  .logo-google span:nth-child(5) { color: var(--cor-google-verde); }
+  .logo-google span:nth-child(6) { color: var(--cor-google-vermelho); }
+  .logo-google { font-size: 2.5rem; font-weight: bold; margin-bottom: 24px; }
+  .caixa-pesquisa-google {
+    border: 2px solid #ddd;
+    border-radius: 24px;
+    padding: 12px 20px;
+    margin: 16px;
+    cursor: pointer;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    color: var(--cor-suave);
+  }
+  .caixa-pesquisa-google.destacado { border-color: var(--cor-primaria); box-shadow: 0 0 0 4px var(--cor-primaria-clara); }
+  .botao-pesquisar-google {
+    background: #f5f5f5;
+    color: var(--cor-texto);
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    margin: 8px;
+    cursor: pointer;
+  }
+  .botao-pesquisar-google.destacado { border-color: var(--cor-primaria); box-shadow: 0 0 0 4px var(--cor-primaria-clara); }
+
+  @keyframes pulsa {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+  .pulsa { animation: pulsa 1.5s infinite; }
+
+  .instrucao {
+    background: #fff7e6;
+    border-left: 4px solid #ff9800;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 12px 0;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- =========================================================
+       TELA INICIAL com a lista de lições
+       ========================================================= -->
+  <div id="telaInicial">
+    <div class="hero">
+      <h1>👋 Toque Fácil</h1>
+      <p>Aprenda a usar a tela do celular passo a passo</p>
+    </div>
+
+    <div class="progresso-caixa">
+      <h3 style="text-align:center; margin-bottom:12px;">Seu Progresso 🎉</h3>
+      <div class="progresso-barra">
+        <div class="progresso-preenchimento" id="barraProgresso" style="width:0%"></div>
+      </div>
+      <p style="text-align:center; margin-top:8px;" id="textoProgresso">0 de 7 lições concluídas</p>
+    </div>
+
+    <div id="listaLicoes"></div>
+  </div>
+
+  <!-- =========================================================
+       TELAS DAS LIÇÕES (uma para cada gesto/app)
+       ========================================================= -->
+  <div id="telaLicao" class="tela-licao">
+    <button class="botao botao-voltar" onclick="voltarParaInicio()">← Voltar</button>
+    <div id="conteudoLicao"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   LÓGICA (JavaScript)
+   Tudo em português para facilitar o aprendizado.
+   ============================================================ */
+
+// --- DADOS DAS LIÇÕES ---
+const licoes = [
+  { chave: "toque",        numero: 1, titulo: "Toque Simples",      emoji: "👆", descricao: "Toque na tela com um dedo. Como apertar um botão!" },
+  { chave: "toqueLongo",   numero: 2, titulo: "Toque Longo",        emoji: "⏱️", descricao: "Mantenha o dedo pressionado. Calma e paciência!" },
+  { chave: "deslizar",     numero: 3, titulo: "Deslizar",           emoji: "👉", descricao: "Arraste o dedo pela tela. Como virar uma página!" },
+  { chave: "pincar",       numero: 4, titulo: "Pinçar (Zoom)",      emoji: "🔍", descricao: "Use dois dedos para aumentar ou diminuir." },
+  { chave: "whatsapp",     numero: 5, titulo: "Áudio no WhatsApp",  emoji: "🎤", descricao: "Segure o microfone para gravar e enviar áudio." },
+  { chave: "youtube",      numero: 6, titulo: "Pesquisar no YouTube", emoji: "▶️", descricao: "Encontre vídeos usando a lupa." },
+  { chave: "google",       numero: 7, titulo: "Pesquisar no Google",  emoji: "🌐", descricao: "Procure qualquer coisa na internet." }
+];
+
+// --- ESTADO ---
+let licoesConcluidas = JSON.parse(localStorage.getItem("licoesConcluidas") || "[]");
+
+// --- FUNÇÕES UTILITÁRIAS ---
+function salvarProgresso(chave) {
+  if (!licoesConcluidas.includes(chave)) {
+    licoesConcluidas.push(chave);
+    localStorage.setItem("licoesConcluidas", JSON.stringify(licoesConcluidas));
+  }
+}
+
+function mostrarToast(mensagem, tipo = "sucesso") {
+  const toast = document.getElementById("toast");
+  toast.textContent = mensagem;
+  toast.className = "toast visivel " + tipo;
+  setTimeout(() => { toast.className = "toast"; }, 2500);
+}
+
+function vibrar(padrao = 50) {
+  if (navigator.vibrate) navigator.vibrate(padrao);
+}
+
+// --- RENDERIZAÇÃO DA TELA INICIAL ---
+function renderizarTelaInicial() {
+  const lista = document.getElementById("listaLicoes");
+  lista.innerHTML = "";
+
+  licoes.forEach((licao, indice) => {
+    const concluida = licoesConcluidas.includes(licao.chave);
+    const desbloqueada = indice === 0 || licoesConcluidas.includes(licoes[indice - 1].chave);
+
+    const cartao = document.createElement("div");
+    cartao.className = "cartao-licao" + (concluida ? " concluida" : "") + (!desbloqueada ? " bloqueada" : "");
+    cartao.innerHTML = `
+      <div class="numero-licao">${concluida ? "✓" : licao.numero}</div>
+      <div class="emoji-licao">${licao.emoji}</div>
+      <div class="info-licao">
+        <h3>${licao.titulo}</h3>
+        <p>${desbloqueada ? licao.descricao : "🔒 Complete a lição anterior"}</p>
+      </div>
+    `;
+    if (desbloqueada) {
+      cartao.onclick = () => abrirLicao(licao.chave);
+    }
+    lista.appendChild(cartao);
+  });
+
+  // Atualizar progresso
+  const porcentagem = (licoesConcluidas.length / licoes.length) * 100;
+  document.getElementById("barraProgresso").style.width = porcentagem + "%";
+  document.getElementById("textoProgresso").textContent =
+    `${licoesConcluidas.length} de ${licoes.length} lições concluídas`;
+}
+
+// --- NAVEGAÇÃO ENTRE TELAS ---
+function abrirLicao(chave) {
+  document.getElementById("telaInicial").style.display = "none";
+  document.getElementById("telaLicao").classList.add("ativa");
+  const conteudo = document.getElementById("conteudoLicao");
+
+  const renderizadores = {
+    toque: renderizarLicaoToque,
+    toqueLongo: renderizarLicaoToqueLongo,
+    deslizar: renderizarLicaoDeslizar,
+    pincar: renderizarLicaoPincar,
+    whatsapp: renderizarLicaoWhatsApp,
+    youtube: renderizarLicaoYouTube,
+    google: renderizarLicaoGoogle
+  };
+
+  renderizadores[chave](conteudo);
+  window.scrollTo(0, 0);
+}
+
+function voltarParaInicio() {
+  document.getElementById("telaInicial").style.display = "block";
+  document.getElementById("telaLicao").classList.remove("ativa");
+  renderizarTelaInicial();
+}
+
+function concluirLicao(chave, titulo) {
+  salvarProgresso(chave);
+  mostrarToast(`🎉 Lição "${titulo}" concluída!`);
+  vibrar([100, 50, 100]);
+  setTimeout(voltarParaInicio, 1500);
+}
+
+// ============================================================
+// LIÇÃO 1 - TOQUE SIMPLES
+// ============================================================
+function renderizarLicaoToque(conteudo) {
+  let acertos = 0;
+  const meta = 5;
+
+  conteudo.innerHTML = `
+    <h2>👆 Toque Simples</h2>
+    <p class="instrucao">Toque rapidamente na área azul abaixo. Faça isso ${meta} vezes!</p>
+    <div class="area-pratica" id="areaToque">
+      <div>
+        <div style="font-size:4rem;">👇</div>
+        <div>Toque aqui</div>
+      </div>
+    </div>
+    <div class="estatisticas">
+      <div><strong id="acertosToque">0</strong>Acertos</div>
+      <div><strong>${meta}</strong>Meta</div>
+    </div>
+  `;
+
+  document.getElementById("areaToque").addEventListener("click", () => {
+    acertos++;
+    document.getElementById("acertosToque").textContent = acertos;
+    vibrar(50);
+    mostrarToast("Muito bem! ✅");
+    if (acertos >= meta) concluirLicao("toque", "Toque Simples");
+  });
+}
+
+// ============================================================
+// LIÇÃO 2 - TOQUE LONGO
+// ============================================================
+function renderizarLicaoToqueLongo(conteudo) {
+  let acertos = 0;
+  const meta = 3;
+  const duracaoNecessaria = 1500; // 1,5 segundos
+
+  conteudo.innerHTML = `
+    <h2>⏱️ Toque Longo</h2>
+    <p class="instrucao">Segure o dedo por 1,5 segundos sem soltar. Faça ${meta} vezes!</p>
+    <div class="area-pratica" id="areaToqueLongo">
+      <div>
+        <div style="font-size:4rem;">✋</div>
+        <div id="textoToqueLongo">Segure aqui</div>
+      </div>
+    </div>
+    <div class="estatisticas">
+      <div><strong id="acertosToqueLongo">0</strong>Acertos</div>
+      <div><strong>${meta}</strong>Meta</div>
+    </div>
+  `;
+
+  const area = document.getElementById("areaToqueLongo");
+  const texto = document.getElementById("textoToqueLongo");
+  let temporizador = null;
+  let inicio = 0;
+
+  function iniciar(e) {
+    e.preventDefault();
+    inicio = Date.now();
+    texto.textContent = "Continue segurando...";
+    temporizador = setTimeout(() => {
+      acertos++;
+      document.getElementById("acertosToqueLongo").textContent = acertos;
+      vibrar(200);
+      mostrarToast("Perfeito! Toque longo! ✅");
+      texto.textContent = "Segure aqui";
+      if (acertos >= meta) concluirLicao("toqueLongo", "Toque Longo");
+    }, duracaoNecessaria);
+  }
+
+  function cancelar() {
+    if (temporizador && Date.now() - inicio < duracaoNecessaria) {
+      clearTimeout(temporizador);
+      texto.textContent = "Soltou cedo! Tente de novo";
+      mostrarToast("Soltou muito cedo. Segure mais!", "");
+    }
+    temporizador = null;
+  }
+
+  area.addEventListener("mousedown", iniciar);
+  area.addEventListener("touchstart", iniciar);
+  area.addEventListener("mouseup", cancelar);
+  area.addEventListener("mouseleave", cancelar);
+  area.addEventListener("touchend", cancelar);
+}
+
+// ============================================================
+// LIÇÃO 3 - DESLIZAR
+// ============================================================
+function renderizarLicaoDeslizar(conteudo) {
+  let acertos = 0;
+  const meta = 3;
+  const distanciaMinima = 80;
+
+  conteudo.innerHTML = `
+    <h2>👉 Deslizar</h2>
+    <p class="instrucao">Arraste o dedo da esquerda para a direita. Faça ${meta} vezes!</p>
+    <div class="area-pratica" id="areaDeslizar">
+      <div>
+        <div style="font-size:4rem;">👈➡️</div>
+        <div>Deslize aqui</div>
+      </div>
+    </div>
+    <div class="estatisticas">
+      <div><strong id="acertosDeslizar">0</strong>Acertos</div>
+      <div><strong>${meta}</strong>Meta</div>
+    </div>
+  `;
+
+  const area = document.getElementById("areaDeslizar");
+  let xInicial = null;
+
+  function obterX(e) {
+    return e.touches ? e.touches[0].clientX : e.clientX;
+  }
+
+  area.addEventListener("touchstart", e => { xInicial = obterX(e); });
+  area.addEventListener("mousedown", e => { xInicial = obterX(e); });
+
+  function finalizar(e) {
+    if (xInicial === null) return;
+    const xFinal = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+    const diferenca = xFinal - xInicial;
+    if (Math.abs(diferenca) >= distanciaMinima) {
+      acertos++;
+      document.getElementById("acertosDeslizar").textContent = acertos;
+      vibrar(50);
+      mostrarToast("Boa! Você deslizou! ✅");
+      if (acertos >= meta) concluirLicao("deslizar", "Deslizar");
+    } else {
+      mostrarToast("Deslize mais longe!", "");
+    }
+    xInicial = null;
+  }
+
+  area.addEventListener("touchend", finalizar);
+  area.addEventListener("mouseup", finalizar);
+}
+
+// ============================================================
+// LIÇÃO 4 - PINÇAR (ZOOM)
+// ============================================================
+function renderizarLicaoPincar(conteudo) {
+  let acertos = 0;
+  const meta = 3;
+
+  conteudo.innerHTML = `
+    <h2>🔍 Pinçar (Zoom)</h2>
+    <p class="instrucao">Use dois dedos: afaste para aumentar, junte para diminuir. Em computador, use a roda do mouse com Ctrl. Faça ${meta} vezes!</p>
+    <div class="area-pratica" id="areaPincar">
+      <div id="alvoPincar" style="font-size:5rem; transition:transform 0.1s;">🖼️</div>
+    </div>
+    <div class="estatisticas">
+      <div><strong id="acertosPincar">0</strong>Acertos</div>
+      <div><strong>${meta}</strong>Meta</div>
+    </div>
+  `;
+
+  const area = document.getElementById("areaPincar");
+  const alvo = document.getElementById("alvoPincar");
+  let distanciaInicial = 0;
+  let escala = 1;
+
+  function obterDistancia(toques) {
+    const dx = toques[1].clientX - toques[0].clientX;
+    const dy = toques[1].clientY - toques[0].clientY;
+    return Math.hypot(dx, dy);
+  }
+
+  area.addEventListener("touchstart", e => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      distanciaInicial = obterDistancia(e.touches);
+    }
+  });
+
+  area.addEventListener("touchmove", e => {
+    if (e.touches.length === 2 && distanciaInicial > 0) {
+      e.preventDefault();
+      const distanciaAtual = obterDistancia(e.touches);
+      escala = Math.min(Math.max(distanciaAtual / distanciaInicial, 0.5), 2);
+      alvo.style.transform = `scale(${escala})`;
+    }
+  });
+
+  area.addEventListener("touchend", () => {
+    if (distanciaInicial > 0 && Math.abs(escala - 1) > 0.2) {
+      acertos++;
+      document.getElementById("acertosPincar").textContent = acertos;
+      vibrar(50);
+      mostrarToast(escala > 1 ? "Aumentou! ✅" : "Diminuiu! ✅");
+      if (acertos >= meta) concluirLicao("pincar", "Pinçar");
+    }
+    distanciaInicial = 0;
+    setTimeout(() => { alvo.style.transform = "scale(1)"; escala = 1; }, 500);
+  });
+
+  // Suporte ao mouse (roda + Ctrl) para computador
+  area.addEventListener("wheel", e => {
+    if (e.ctrlKey) {
+      e.preventDefault();
+      escala += e.deltaY > 0 ? -0.1 : 0.1;
+      escala = Math.min(Math.max(escala, 0.5), 2);
+      alvo.style.transform = `scale(${escala})`;
+      if (Math.abs(escala - 1) > 0.3) {
+        acertos++;
+        document.getElementById("acertosPincar").textContent = acertos;
+        mostrarToast(escala > 1 ? "Aumentou! ✅" : "Diminuiu! ✅");
+        escala = 1;
+        if (acertos >= meta) concluirLicao("pincar", "Pinçar");
+      }
+    }
+  });
+}
+
+// ============================================================
+// LIÇÃO 5 - WHATSAPP (ENVIAR ÁUDIO)
+// ============================================================
+function renderizarLicaoWhatsApp(conteudo) {
+  const duracaoNecessaria = 1500;
+
+  conteudo.innerHTML = `
+    <h2>🎤 Mandar Áudio no WhatsApp</h2>
+    <p class="instrucao">Segure o botão verde do microfone por 1,5 segundos para gravar e enviar um áudio!</p>
+    <div class="tela-app">
+      <div class="cabecalho-whatsapp">
+        <div style="width:36px; height:36px; border-radius:50%; background:white; display:flex; align-items:center; justify-content:center;">👤</div>
+        <div><strong>Maria</strong><div style="font-size:0.8rem;">online</div></div>
+      </div>
+      <div class="conversa" id="conversa">
+        <div class="balao">Oi! Tudo bem? 😊</div>
+      </div>
+      <div class="rodape-whatsapp">
+        <div class="campo-mensagem">Mensagem</div>
+        <div class="ondas-audio" id="ondasAudio">🔴 Gravando...</div>
+        <div class="botao-microfone" id="botaoMic">🎤</div>
+      </div>
+    </div>
+  `;
+
+  const botao = document.getElementById("botaoMic");
+  const ondas = document.getElementById("ondasAudio");
+  const conversa = document.getElementById("conversa");
+  let temporizador = null;
+  let inicio = 0;
+
+  function iniciarGravacao(e) {
+    e.preventDefault();
+    inicio = Date.now();
+    botao.classList.add("gravando");
+    ondas.classList.add("ativo");
+    temporizador = setTimeout(() => {
+      // Áudio enviado com sucesso
+      const balao = document.createElement("div");
+      balao.className = "balao";
+      balao.innerHTML = "▶️ 🎵 ━━━━━ 0:03";
+      conversa.appendChild(balao);
+      vibrar([100, 50, 100]);
+      mostrarToast("Áudio enviado! 🎉");
+      concluirLicao("whatsapp", "Áudio no WhatsApp");
+    }, duracaoNecessaria);
+  }
+
+  function pararGravacao() {
+    botao.classList.remove("gravando");
+    ondas.classList.remove("ativo");
+    if (temporizador && Date.now() - inicio < duracaoNecessaria) {
+      clearTimeout(temporizador);
+      mostrarToast("Segure por mais tempo para enviar!", "");
+    }
+    temporizador = null;
+  }
+
+  botao.addEventListener("mousedown", iniciarGravacao);
+  botao.addEventListener("touchstart", iniciarGravacao);
+  botao.addEventListener("mouseup", pararGravacao);
+  botao.addEventListener("mouseleave", pararGravacao);
+  botao.addEventListener("touchend", pararGravacao);
+}
+
+// ============================================================
+// LIÇÃO 6 - YOUTUBE (PESQUISAR)
+// ============================================================
+function renderizarLicaoYouTube(conteudo) {
+  let passo = 1; // 1: tocar lupa, 2: esperar digitar, 3: escolher vídeo
+
+  conteudo.innerHTML = `
+    <h2>▶️ Pesquisar no YouTube</h2>
+    <p class="instrucao" id="instrucaoYT">Passo 1: Toque na lupa 🔍 para pesquisar</p>
+    <div class="tela-app">
+      <div class="cabecalho-youtube">
+        <span class="logo-youtube">▶ YouTube</span>
+        <div class="icone-lupa destacado" id="lupaYT">🔍</div>
+      </div>
+      <div class="barra-pesquisa-yt" id="barraYT" style="display:none;"></div>
+      <div id="resultadosYT" style="display:none;"></div>
+    </div>
+  `;
+
+  document.getElementById("lupaYT").onclick = () => {
+    if (passo !== 1) return;
+    passo = 2;
+    document.getElementById("lupaYT").classList.remove("destacado");
+    const barra = document.getElementById("barraYT");
+    barra.style.display = "flex";
+    document.getElementById("instrucaoYT").textContent = "Passo 2: Aguarde... estamos digitando para você";
+
+    // Anima a digitação
+    const texto = "receita de bolo de cenoura";
+    let i = 0;
+    const intervalo = setInterval(() => {
+      barra.textContent = texto.substring(0, ++i) + "|";
+      if (i >= texto.length) {
+        clearInterval(intervalo);
+        barra.textContent = texto;
+        passo = 3;
+        document.getElementById("instrucaoYT").textContent = "Passo 3: Toque em um vídeo para assistir";
+        mostrarResultadosYT();
+      }
+    }, 80);
+  };
+
+  function mostrarResultadosYT() {
+    const resultados = document.getElementById("resultadosYT");
+    resultados.style.display = "block";
+    const videos = [
+      "Bolo de Cenoura da Vovó",
+      "Receita Fácil de Bolo",
+      "Bolo de Cenoura Fofinho"
+    ];
+    resultados.innerHTML = videos.map((titulo, i) => `
+      <div class="video-item ${i === 0 ? "destacado" : ""}" data-i="${i}">
+        <div class="miniatura-video">▶</div>
+        <div><strong>${titulo}</strong><div style="font-size:0.85rem; color:#666;">1M visualizações</div></div>
+      </div>
+    `).join("");
+
+    resultados.querySelectorAll(".video-item").forEach(item => {
+      item.onclick = () => {
+        if (passo !== 3) return;
+        vibrar(50);
+        concluirLicao("youtube", "Pesquisar no YouTube");
+      };
+    });
+  }
+}
+
+// ============================================================
+// LIÇÃO 7 - GOOGLE (PESQUISAR)
+// ============================================================
+function renderizarLicaoGoogle(conteudo) {
+  let passo = 1;
+
+  conteudo.innerHTML = `
+    <h2>🌐 Pesquisar no Google</h2>
+    <p class="instrucao" id="instrucaoG">Passo 1: Toque na caixa de pesquisa</p>
+    <div class="tela-app">
+      <div class="cabecalho-google">
+        <div class="logo-google">
+          <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
+        </div>
+      </div>
+      <div class="caixa-pesquisa-google destacado" id="caixaG">Pesquisar no Google ou digitar URL</div>
+      <div style="text-align:center;">
+        <button class="botao-pesquisar-google" id="botaoG">Pesquisar no Google</button>
+      </div>
+    </div>
+  `;
+
+  const caixa = document.getElementById("caixaG");
+  const botao = document.getElementById("botaoG");
+
+  caixa.onclick = () => {
+    if (passo !== 1) return;
+    passo = 2;
+    caixa.classList.remove("destacado");
+    caixa.style.color = "var(--cor-texto)";
+    document.getElementById("instrucaoG").textContent = "Passo 2: Estamos digitando... aguarde";
+
+    const texto = "como fazer chá de camomila";
+    let i = 0;
+    const intervalo = setInterval(() => {
+      caixa.textContent = texto.substring(0, ++i) + "|";
+      if (i >= texto.length) {
+        clearInterval(intervalo);
+        caixa.textContent = texto;
+        passo = 3;
+        botao.classList.add("destacado", "pulsa");
+        document.getElementById("instrucaoG").textContent = 'Passo 3: Toque em "Pesquisar no Google"';
+      }
+    }, 80);
+  };
+
+  botao.onclick = () => {
+    if (passo !== 3) return;
+    vibrar(50);
+    concluirLicao("google", "Pesquisar no Google");
+  };
+}
+
+// --- INICIALIZAÇÃO ---
+renderizarTelaInicial();
+</script>
+</body>
+</html>
